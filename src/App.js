@@ -34,6 +34,7 @@ import CodeViewer from "./component/Viewer/Code";
 import MusicPlayer from "./component/FileManager/MusicPlayer";
 import EpubViewer from "./component/Viewer/Epub";
 import { useTranslation } from "react-i18next";
+import "./assets/global.css";
 
 const PDFViewer = React.lazy(() =>
     import(/* webpackChunkName: "pdf" */ "./component/Viewer/PDF")

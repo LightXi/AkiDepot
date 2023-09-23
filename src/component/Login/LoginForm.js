@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import {
     Avatar,
     Button,
@@ -54,19 +53,46 @@ const useStyles = makeStyles((theme) => ({
         flexShrink: 1,
         [theme.breakpoints.down("sm")]: {
             display: "none",
+        },
+        "& .logo": {
+            position: "absolute",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            width: "max-content",
+            height: "max-content",
+            userSelect: "none",
+            "& img": {
+                width: "64px",
+                height: "64px",
+                borderRadius: "50%",
+                padding: "4px",
+                background: "#fff",
+            },
+            "& p": {
+                fontSize: "20px",
+                userSelect: "none",
+                fontWeight: "bold",
+                color: "#fff",
+                textShadow: "0 0 4px rgba(0,0,0,.2)",
+                marginTop: "16px",
+            }
+        },
+        "& .image": {
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            zIndex: -1,
+            background: "url(https://cdn.lightxi.com/cloudreve/uploads/2023/02/03/Z19Mk1IK_waf_block.png) center no-repeat !important",
+            backgroundSize: "cover !important",
+            minWidth: "100%",
+            maxWidth: "60vw",
+            minHeight: "calc(100vh + 2px)",
         }
-    },
-    backgroundImage: {
-        position: "absolute",
-        top: "50%",
-        left: "50%",
-        transform: "translate(-50%,-50%)",
-        zIndex: -1,
-        background: "url(https://cdn.lightxi.com/cloudreve/uploads/2023/02/03/Z19Mk1IK_waf_block.png) center no-repeat !important",
-        backgroundSize: "cover !important",
-        minWidth: "100%",
-        maxWidth: "60vw",
-        minHeight: "100%",
     },
     layout: {
         width: "auto",
@@ -82,6 +108,7 @@ const useStyles = makeStyles((theme) => ({
         [theme.breakpoints.down("sm")]: {
             margin: "110px auto",
             minWidth: 0,
+            width: "100%",
         }
     },
     paper: {
@@ -95,7 +122,13 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: "unset",
+        borderRadius: "50%",
+        boxShadow: "0 0 4px 2px rgba(0,0,0,.02)",
+        "& img": {
+            width: "100%",
+            height: "100%",
+        }
     },
     form: {
         width: "100%", // Fix IE 11 issue.
@@ -320,14 +353,18 @@ function LoginForm() {
     return (
         <div className={classes.wrapper}>
             <div className={classes.background}>
-                <img className={classes.backgroundImage} src="https://cdn.lightxi.com/cloudreve/uploads/2023/02/03/Z19Mk1IK_waf_block.png" alt="" />
+                <div className={"logo"}>
+                    <img src={`/logo.svg`} alt={``} />
+                    <p> {title} </p>
+                </div>
+                <div className={"image"} />
             </div>
             <div className={classes.layout}>
                 {!twoFA && (
                     <>
                         <Paper className={classes.paper}>
                             <Avatar className={classes.avatar}>
-                                <LockOutlinedIcon />
+                                <img src={`/logo.svg`} alt={``} />
                             </Avatar>
                             <Typography component="h1" variant="h5">
                                 {t("login.title", { title })}

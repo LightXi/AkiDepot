@@ -52,7 +52,12 @@ const useStyles = makeStyles((theme) => ({
         overflow: "hidden",
         flexShrink: 1,
         [theme.breakpoints.down("sm")]: {
-            display: "none",
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate(-50%,-50%)",
+            width: "calc(100vw + 2px)",
+            height: "calc(100vh + 2px)",
         },
         "& .logo": {
             position: "absolute",
@@ -71,6 +76,9 @@ const useStyles = makeStyles((theme) => ({
                 borderRadius: "50%",
                 padding: "4px",
                 background: "#fff",
+                [theme.breakpoints.down("sm")]: {
+                    display: "none",
+                },
             },
             "& p": {
                 fontSize: "20px",
@@ -79,6 +87,9 @@ const useStyles = makeStyles((theme) => ({
                 color: "#fff",
                 textShadow: "0 0 4px rgba(0,0,0,.2)",
                 marginTop: "16px",
+                [theme.breakpoints.down("sm")]: {
+                    display: "none",
+                },
             }
         },
         "& .image": {
@@ -119,6 +130,8 @@ const useStyles = makeStyles((theme) => ({
         padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
             3
         )}px`,
+        opacity: 0.95,
+        backdropFilter: "blur(10px)",
     },
     avatar: {
         margin: theme.spacing(1),
@@ -149,6 +162,17 @@ const useStyles = makeStyles((theme) => ({
     authnLink: {
         textAlign: "center",
         marginTop: 16,
+        [theme.breakpoints.down("sm")]: {
+            boxShadow: "0px 2px 1px -1px rgba(197,204,230,0.2),0px 1px 1px 0px rgba(197,204,230,0.14),0px 1px 3px 0px rgba(197,204,230,0.12)",
+            borderRadius: 4,
+            background: "rgba(255,255,255,.95)",
+            backdropFilter: "blur(4px)",
+            overflow: "hidden",
+        },
+        "& .action": {
+            width: "100%",
+            borderRadius: 4,
+        }
     },
     copyright: {
         textAlign: "center",
@@ -159,6 +183,9 @@ const useStyles = makeStyles((theme) => ({
             color: "#2289fd",
             textDecoration: "none",
             marginLeft: 4,
+        },
+        [theme.breakpoints.down("sm")]: {
+            color: "#fff",
         }
     }
 }));
@@ -491,6 +518,7 @@ function LoginForm() {
                         {authn && (
                             <div className={classes.authnLink}>
                                 <Button
+                                    className={`action`}
                                     color="primary"
                                     onClick={() => setUseAuthn(!useAuthn)}
                                 >

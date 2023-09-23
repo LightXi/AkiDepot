@@ -112,7 +112,7 @@ const useStyles = makeStyles((theme) => ({
         transform: "translateY(-32px)",
         flexGrow: 1,
         flexShrink: 0,
-        padding: "0 72px",
+        padding: "0 min(72px, 5vw)",
         [theme.breakpoints.up("sm")]: {
             width: 400,
         },

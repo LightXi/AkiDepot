@@ -34,7 +34,8 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles((theme) => {
+    return {
     wrapper: {
         display: "flex",
         flexDirection: "row",
@@ -130,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
         padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
             3
         )}px`,
-        opacity: 0.95,
+        background: `${theme.palette.background.paper}f2`,
         backdropFilter: "blur(10px)",
     },
     avatar: {
@@ -188,7 +189,8 @@ const useStyles = makeStyles((theme) => ({
             color: "#fff",
         }
     }
-}));
+    }
+});
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);

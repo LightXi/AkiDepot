@@ -1063,7 +1063,7 @@ class UserSettingCompoment extends Component {
                         className={classes.sectionTitle}
                         variant="subtitle2"
                     >
-                        {t("setting.aboutCloudreve")}
+                        {t("setting.aboutAkiDepot")}
                     </Typography>
                     <Paper>
                         <List className={classes.desenList}>
@@ -1071,7 +1071,7 @@ class UserSettingCompoment extends Component {
                                 button
                                 onClick={() =>
                                     window.open(
-                                        "https://github.com/cloudreve/cloudreve"
+                                        "https://github.com/LightXi/AkiDepot"
                                     )
                                 }
                             >

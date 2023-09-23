@@ -109,9 +109,9 @@ export default function App() {
                 <div className={classes.root} id="container">
                     <CssBaseline />
                     <AlertBar />
-                    <Navbar />
+                    { !location.pathname.startsWith("/login") && <Navbar /> }
                     <main className={classes.content}>
-                        <div className={classes.toolbar} />
+                        { !location.pathname.startsWith("/login") && <div className={classes.toolbar} /> }
                         <Switch>
                             <AuthRoute exact path={path} isLogin={isLogin}>
                                 <Redirect

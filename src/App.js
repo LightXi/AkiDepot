@@ -35,6 +35,8 @@ import MusicPlayer from "./component/FileManager/MusicPlayer";
 import EpubViewer from "./component/Viewer/Epub";
 import { useTranslation } from "react-i18next";
 import "./assets/global.css";
+import IndexRoute from "./middleware/IndexRoute";
+import IndexPage from "./component/Index/IndexPage";
 
 const PDFViewer = React.lazy(() =>
     import(/* webpackChunkName: "pdf" */ "./component/Viewer/PDF")
@@ -104,23 +106,21 @@ export default function App() {
     const classes = useStyles();
 
     const { path } = useRouteMatch();
+    const requireHide = ["/", "/login", "/signup", "/activate", "/reset", "/forget"];
+
     return (
         <React.Fragment>
             <ThemeProvider theme={theme}>
                 <div className={classes.root} id="container">
                     <CssBaseline />
                     <AlertBar />
-                    { !location.pathname.startsWith("/login") && <Navbar /> }
+                    { !requireHide.includes(location.pathname) && <Navbar /> }
                     <main className={classes.content}>
-                        { !location.pathname.startsWith("/login") && <div className={classes.toolbar} /> }
+                        { !requireHide.includes(location.pathname) && <div className={classes.toolbar} /> }
                         <Switch>
-                            <AuthRoute exact path={path} isLogin={isLogin}>
-                                <Redirect
-                                    to={{
-                                        pathname: "/home",
-                                    }}
-                                />
-                            </AuthRoute>
+                            <IndexRoute exact path={path} isLogin={isLogin}>
+                                <IndexPage />
+                            </IndexRoute>
 
                             <AuthRoute path={`${path}home`} isLogin={isLogin}>
                                 <FileManager />

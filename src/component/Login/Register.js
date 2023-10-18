@@ -1,6 +1,5 @@
 import React, { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import RegIcon from "@material-ui/icons/AssignmentIndOutlined";
 import {
     Avatar,
     Button,
@@ -38,6 +37,18 @@ const useStyles = makeStyles((theme) => ({
         },
         marginBottom: 110,
     },
+    image: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        zIndex: -1,
+        userSelect: "none",
+        pointerEvents: "none",
+        opacity: 0.85,
+    },
     paper: {
         marginTop: theme.spacing(8),
         display: "flex",
@@ -49,7 +60,13 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: "unset",
+        borderRadius: "50%",
+        boxShadow: "0 0 4px 2px rgba(0,0,0,.02)",
+        "& img": {
+            width: "100%",
+            height: "100%",
+        }
     },
     form: {
         width: "100%", // Fix IE 11 issue.
@@ -164,11 +181,12 @@ function Register() {
 
     return (
         <div className={classes.layout}>
+            <img src="/static/banner/background.webp" alt="" className={classes.image} />
             <>
                 {!emailActive && (
                     <Paper className={classes.paper}>
                         <Avatar className={classes.avatar}>
-                            <RegIcon />
+                            <img src={`/logo.svg`} alt={``} />
                         </Avatar>
                         <Typography component="h1" variant="h5">
                             {t("login.sinUpTitle", { title })}

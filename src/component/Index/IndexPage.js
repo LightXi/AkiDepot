@@ -1,5 +1,7 @@
 import React from "react";
 import { makeStyles } from "@material-ui/core";
+import router from "react-router-dom/es/Router";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => {
     return {
@@ -23,8 +25,8 @@ const useStyles = makeStyles((theme) => {
             display: "flex",
             flexDirection: "row",
             flexWrap: "wrap",
-            gap: "3.5rem",
-            padding: "1rem 8rem 3rem 6rem",
+            gap: "5rem",
+            padding: "4rem 8rem",
             background: "#fff",
             borderRadius: "12px",
             alignItems: "center",
@@ -32,27 +34,19 @@ const useStyles = makeStyles((theme) => {
             [theme.breakpoints.down("sm")]: {
                 flexDirection: "column",
                 padding: "2rem 6rem 4rem 6rem",
+                gap: "0.5rem",
             },
             userSelect: "none",
             "& .image": {
-                width: "25vw",
+                width: "15vw",
                 "& img": {
                     width: "100%",
-                    height: "100%",
-                    draggable: false,
-                    userDrag: "none",
-                    "-moz-user-drag": "none",
-                    "-webkit-user-drag": "none",
-                    "-ms-user-drag": "none",
                     borderRadius: "12px",
                 },
                 [theme.breakpoints.down("sm")]: {
                     width: "100%",
-                    maxWidth: "220px",
                 },
-                [theme.breakpoints.up("sm")]: {
-                    transform: "translateX(-10%)",
-                }
+                maxWidth: "120px",
             },
             "& .content": {
                 flexGrow: 1,
@@ -185,6 +179,8 @@ const useStyles = makeStyles((theme) => {
                 maxWidth: "200px",
                 minHeight: "160px",
                 textAlign: "center",
+                cursor: "pointer",
+                transition: "0.25s",
                 "& svg": {
                     width: "36px",
                     height: "36px",
@@ -202,6 +198,10 @@ const useStyles = makeStyles((theme) => {
                 "& .description": {
                     fontSize: "0.75rem",
                     color: "#666",
+                },
+                "&:hover": {
+                    boxShadow: "0 0 12px 0 rgba(0, 0, 0, 0.12)",
+                    transform: "translateY(-4px)",
                 }
             }
         }
@@ -209,21 +209,26 @@ const useStyles = makeStyles((theme) => {
 });
 
 function IndexPage() {
+    const history = useHistory();
     const classes = useStyles();
 
     return (
         <div className={classes.root}>
             <div className={classes.landing}>
                 <div className="image">
-                    <img src={`/static/banner/land.svg`} alt="" />
+                    <img src={`/logo.svg`} alt="" />
                 </div>
                 <div className="content">
                     <div className="title">AkiDepot</div>
                     <div className="subtitle">秋储云谷</div>
                     <div className="description">秋储云谷，春蓄花纳</div>
                     <div className="action">
-                        <button className="register">注册</button>
-                        <button className="login">登录</button>
+                        <button className="register" onClick={
+                            () => history.push("/signup")
+                        }>注册</button>
+                        <button className="login" onClick={
+                            () => history.push("/login")
+                        }>登录</button>
                     </div>
                 </div>
             </div>

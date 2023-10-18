@@ -5,8 +5,6 @@ import {
     Button,
     Divider,
     FormControl,
-    Input,
-    InputLabel,
     Link,
     makeStyles,
     Paper,
@@ -14,7 +12,6 @@ import {
     Typography,
 } from "@material-ui/core";
 import API from "../../middleware/Api";
-import KeyIcon from "@material-ui/icons/VpnKeyOutlined";
 import { useCaptcha } from "../../hooks/useCaptcha";
 import { toggleSnackbar } from "../../redux/explorer";
 import { useTranslation } from "react-i18next";
@@ -25,6 +22,18 @@ import { useTheme } from "@material-ui/core/styles";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 
 const useStyles = makeStyles((theme) => ({
+    image: {
+        position: "absolute",
+        top: 0,
+        left: 0,
+        width: "100%",
+        height: "100%",
+        objectFit: "cover",
+        zIndex: -1,
+        userSelect: "none",
+        pointerEvents: "none",
+        opacity: 0.85,
+    },
     layout: {
         width: "auto",
         marginTop: "110px",
@@ -48,7 +57,13 @@ const useStyles = makeStyles((theme) => ({
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: theme.palette.secondary.main,
+        backgroundColor: "unset",
+        borderRadius: "50%",
+        boxShadow: "0 0 4px 2px rgba(0,0,0,.02)",
+        "& img": {
+            width: "100%",
+            height: "100%",
+        }
     },
     submit: {
         marginTop: theme.spacing(3),
@@ -129,9 +144,10 @@ function Reset() {
 
     return (
         <div className={classes.layout}>
+            <img src="/static/banner/background.webp" alt="" className={classes.image} />
             <Paper className={classes.paper}>
                 <Avatar className={classes.avatar}>
-                    <KeyIcon />
+                    <img src={`/logo.svg`} alt={``} />
                 </Avatar>
                 <Typography component="h1" variant="h5">
                     {t("login.findMyPassword")}

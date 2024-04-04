@@ -1,4 +1,4 @@
-extends: 
+extends:
   - eslint:recommended
   - plugin:react/recommended
   - plugin:@typescript-eslint/recommended
@@ -11,7 +11,7 @@ parserOptions:
   sourceType: module
   ecmaVersion: 2020
   ecmaFeatures:
-      jsx: true
+    jsx: true
 env:
   es6: true
   browser: true
@@ -38,6 +38,3 @@ overrides:
   - files: ['*.js', '*.jsx']
     rules:
       '@typescript-eslint/camelcase': 0
-  - files: ['config/*.js', 'scripts/*.js']
-    rules:
-      '@typescript-eslint/no-var-requires': 0

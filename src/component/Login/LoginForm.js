@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import {
     Avatar,
     Button,
@@ -34,94 +35,18 @@ import InputAdornment from "@material-ui/core/InputAdornment";
 import useMediaQuery from "@material-ui/core/useMediaQuery";
 import { useTheme } from "@material-ui/core/styles";
 
-const useStyles = makeStyles((theme) => {
-    return {
-    wrapper: {
-        display: "flex",
-        flexDirection: "row",
-        width: "100%",
-        height: "100vh",
-        alignItems: "center",
-    },
-    background: {
-        position: "relative",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        width: "52vw",
-        height: "100%",
-        overflow: "hidden",
-        flexShrink: 1,
-        [theme.breakpoints.down("sm")]: {
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            width: "calc(100vw + 2px)",
-            height: "calc(100vh + 2px)",
-        },
-        "& .logo": {
-            position: "absolute",
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            width: "max-content",
-            height: "max-content",
-            userSelect: "none",
-            "& img": {
-                width: "64px",
-                height: "64px",
-                borderRadius: "50%",
-                padding: "4px",
-                background: "#fff",
-                [theme.breakpoints.down("sm")]: {
-                    display: "none",
-                },
-            },
-            "& p": {
-                fontSize: "20px",
-                userSelect: "none",
-                fontWeight: "bold",
-                color: "#fff",
-                textShadow: "0 0 4px rgba(0,0,0,.2)",
-                marginTop: "16px",
-                [theme.breakpoints.down("sm")]: {
-                    display: "none",
-                },
-            }
-        },
-        "& .image": {
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%,-50%)",
-            zIndex: -1,
-            background: "url(https://cdn.lightxi.com/cloudreve/uploads/2023/02/03/Z19Mk1IK_waf_block.png) center no-repeat !important",
-            backgroundSize: "cover !important",
-            minWidth: "100%",
-            maxWidth: "60vw",
-            minHeight: "calc(100vh + 2px)",
-        }
-    },
+const useStyles = makeStyles((theme) => ({
     layout: {
         width: "auto",
-        minWidth: "42vw",
-        height: "max-content",
-        transform: "translateY(-32px)",
-        flexGrow: 1,
-        flexShrink: 0,
-        padding: "0 min(72px, 5vw)",
+        marginTop: "110px",
+        marginLeft: theme.spacing(3),
+        marginRight: theme.spacing(3),
         [theme.breakpoints.up("sm")]: {
             width: 400,
+            marginLeft: "auto",
+            marginRight: "auto",
         },
-        [theme.breakpoints.down("sm")]: {
-            margin: "110px auto",
-            minWidth: 0,
-            width: "100%",
-        }
+        marginBottom: 110,
     },
     paper: {
         marginTop: theme.spacing(8),
@@ -131,18 +56,10 @@ const useStyles = makeStyles((theme) => {
         padding: `${theme.spacing(2)}px ${theme.spacing(3)}px ${theme.spacing(
             3
         )}px`,
-        background: `${theme.palette.background.paper}f2`,
-        backdropFilter: "blur(10px)",
     },
     avatar: {
         margin: theme.spacing(1),
-        backgroundColor: "unset",
-        borderRadius: "50%",
-        boxShadow: "0 0 4px 2px rgba(0,0,0,.02)",
-        "& img": {
-            width: "100%",
-            height: "100%",
-        }
+        backgroundColor: theme.palette.secondary.main,
     },
     form: {
         width: "100%", // Fix IE 11 issue.
@@ -163,55 +80,8 @@ const useStyles = makeStyles((theme) => {
     authnLink: {
         textAlign: "center",
         marginTop: 16,
-        [theme.breakpoints.down("sm")]: {
-            boxShadow: "0px 2px 1px -1px rgba(197,204,230,0.2),0px 1px 1px 0px rgba(197,204,230,0.14),0px 1px 3px 0px rgba(197,204,230,0.12)",
-            borderRadius: 4,
-            background: "rgba(255,255,255,.95)",
-            backdropFilter: "blur(4px)",
-            overflow: "hidden",
-        },
-        "& .action": {
-            width: "100%",
-            borderRadius: 4,
-        }
     },
-    copyright: {
-        textAlign: "center",
-        marginTop: "24px",
-        color: "#999",
-        textDecoration: "none",
-        "& a": {
-            color: "#2289fd",
-            textDecoration: "none",
-            marginLeft: 4,
-        },
-        [theme.breakpoints.down("sm")]: {
-            color: "#fff",
-        }
-    },
-    credit: {
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        textAlign: "center",
-        gap: "4px",
-        marginTop: "5vh",
-        "& a": {
-            display: "flex",
-            flexDirection: "row",
-            alignItems: "center",
-            justifyContent: "center",
-            gap: "4px",
-            color: "#999",
-            textDecoration: "none",
-            "& img": {
-                width: "16px",
-                height: "16px",
-            }
-        }
-    }
-    }
-});
+}));
 
 function useQuery() {
     return new URLSearchParams(useLocation().search);
@@ -232,6 +102,7 @@ function LoginForm() {
         (state) => state.siteConfig.registerEnabled
     );
     const title = useSelector((state) => state.siteConfig.title);
+    const QQLogin = useSelector((state) => state.siteConfig.QQLogin);
     const authn = useSelector((state) => state.siteConfig.authn);
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
@@ -384,6 +255,18 @@ function LoginForm() {
             });
     };
 
+    const initQQLogin = () => {
+        setLoading(true);
+        API.post("/user/qq")
+            .then((response) => {
+                window.location.href = response.data;
+            })
+            .catch((error) => {
+                setLoading(false);
+                ToggleSnackbar("top", "right", error.message, "warning");
+            });
+    };
+
     const twoFALogin = (e) => {
         e.preventDefault();
         setLoading(true);
@@ -401,73 +284,88 @@ function LoginForm() {
     };
 
     return (
-        <div className={classes.wrapper}>
-            <div className={classes.background}>
-                <div className={"logo"}>
-                    <img src={`/logo.svg`} alt={``} />
-                    <p> {title} </p>
-                </div>
-                <div className={"image"} />
-            </div>
-            <div className={classes.layout}>
-                {!twoFA && (
-                    <>
-                        <Paper className={classes.paper}>
-                            <Avatar className={classes.avatar}>
-                                <img src={`/logo.svg`} alt={``} />
-                            </Avatar>
-                            <Typography component="h1" variant="h5">
-                                {t("login.title", { title })}
-                            </Typography>
-                            {!useAuthn && (
-                                <form className={classes.form} onSubmit={login}>
-                                    <FormControl margin="normal" required fullWidth>
-                                        <TextField
-                                            label={t("login.email")}
-                                            variant={"outlined"}
-                                            inputProps={{
-                                                id: "email",
-                                                type: "email",
-                                                name: "email",
-                                            }}
-                                            onChange={(e) =>
-                                                setEmail(e.target.value)
-                                            }
-                                            InputProps={{
-                                                startAdornment: !isMobile && (
-                                                    <InputAdornment position="start">
-                                                        <EmailOutlined />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            autoComplete
-                                            value={email}
-                                            autoFocus
-                                        />
-                                    </FormControl>
-                                    <FormControl margin="normal" required fullWidth>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t("login.password")}
-                                            inputProps={{
-                                                name: "password",
-                                                type: "password",
-                                                id: "password",
-                                            }}
-                                            onChange={(e) => setPwd(e.target.value)}
-                                            InputProps={{
-                                                startAdornment: !isMobile && (
-                                                    <InputAdornment position="start">
-                                                        <VpnKeyOutlined />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            value={pwd}
-                                            autoComplete
-                                        />
-                                    </FormControl>
-                                    {loginCaptcha && <CaptchaRender />}
-
+        <div className={classes.layout}>
+            {!twoFA && (
+                <>
+                    <Paper className={classes.paper}>
+                        <Avatar className={classes.avatar}>
+                            <LockOutlinedIcon />
+                        </Avatar>
+                        <Typography component="h1" variant="h5">
+                            {t("login.title", { title })}
+                        </Typography>
+                        {!useAuthn && (
+                            <form className={classes.form} onSubmit={login}>
+                                <FormControl margin="normal" required fullWidth>
+                                    <TextField
+                                        label={t("login.email")}
+                                        variant={"outlined"}
+                                        inputProps={{
+                                            id: "email",
+                                            type: "email",
+                                            name: "email",
+                                        }}
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        InputProps={{
+                                            startAdornment: !isMobile && (
+                                                <InputAdornment position="start">
+                                                    <EmailOutlined />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        autoComplete
+                                        value={email}
+                                        autoFocus
+                                    />
+                                </FormControl>
+                                <FormControl margin="normal" required fullWidth>
+                                    <TextField
+                                        variant={"outlined"}
+                                        label={t("login.password")}
+                                        inputProps={{
+                                            name: "password",
+                                            type: "password",
+                                            id: "password",
+                                        }}
+                                        onChange={(e) => setPwd(e.target.value)}
+                                        InputProps={{
+                                            startAdornment: !isMobile && (
+                                                <InputAdornment position="start">
+                                                    <VpnKeyOutlined />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        value={pwd}
+                                        autoComplete
+                                    />
+                                </FormControl>
+                                {loginCaptcha && <CaptchaRender />}
+                                {QQLogin && (
+                                    <div className={classes.buttonContainer}>
+                                        <Button
+                                            type="submit"
+                                            variant="contained"
+                                            color="primary"
+                                            disabled={loading}
+                                            className={classes.submit}
+                                        >
+                                            {t("login.signIn")}
+                                        </Button>
+                                        <Button
+                                            variant="contained"
+                                            color="secondary"
+                                            style={{ marginLeft: "10px" }}
+                                            disabled={loading}
+                                            className={classes.submit}
+                                            onClick={initQQLogin}
+                                        >
+                                            {t("vas.loginWithQQ")}
+                                        </Button>
+                                    </div>
+                                )}
+                                {!QQLogin && (
                                     <Button
                                         type="submit"
                                         fullWidth
@@ -475,159 +373,143 @@ function LoginForm() {
                                         color="primary"
                                         disabled={
                                             loading ||
-                                            (loginCaptcha ? captchaLoading : false)
+                                            (loginCaptcha
+                                                ? captchaLoading
+                                                : false)
                                         }
                                         className={classes.submit}
                                     >
                                         {t("login.signIn")}
                                     </Button>
-                                </form>
-                            )}
-                            {useAuthn && (
-                                <form className={classes.form}>
-                                    <FormControl margin="normal" required fullWidth>
-                                        <TextField
-                                            variant={"outlined"}
-                                            label={t("login.email")}
-                                            InputProps={{
-                                                id: "email",
-                                                type: "email",
-                                                name: "email",
-                                                startAdornment: !isMobile && (
-                                                    <InputAdornment position="start">
-                                                        <EmailOutlined />
-                                                    </InputAdornment>
-                                                ),
-                                            }}
-                                            onChange={(e) =>
-                                                setEmail(e.target.value)
-                                            }
-                                            autoComplete
-                                            value={email}
-                                            autoFocus
-                                            required
-                                        />
-                                    </FormControl>
-                                    <Button
-                                        type="submit"
-                                        fullWidth
-                                        variant="contained"
-                                        color="primary"
-                                        disabled={loading}
-                                        onClick={authnLogin}
-                                        className={classes.submit}
-                                    >
-                                        {t("login.continue")}
-                                    </Button>
-                                </form>
-                            )}
-                            <Divider />
-                            <div className={classes.link}>
-                                <div>
-                                    <Link component={RouterLink} to={"/forget"}>
-                                        {t("login.forgetPassword")}
-                                    </Link>
-                                </div>
-                                <div>
-                                    {registerEnabled && (
-                                        <Link component={RouterLink} to={"/signup"}>
-                                            {t("login.signUpAccount")}
-                                        </Link>
-                                    )}
-                                </div>
-                            </div>
-                        </Paper>
-
-                        {authn && (
-                            <div className={classes.authnLink}>
-                                <Button
-                                    className={`action`}
-                                    color="primary"
-                                    onClick={() => setUseAuthn(!useAuthn)}
-                                >
-                                    {!useAuthn && (
-                                        <>
-                                            <Fingerprint
-                                                style={{
-                                                    marginRight: 8,
-                                                }}
-                                            />
-                                            {t("login.useFIDO2")}
-                                        </>
-                                    )}
-                                    {useAuthn && (
-                                        <>
-                                            <VpnKey
-                                                style={{
-                                                    marginRight: 8,
-                                                }}
-                                            />
-                                            {t("login.usePassword")}
-                                        </>
-                                    )}
-                                </Button>
-                            </div>
+                                )}
+                            </form>
                         )}
-                    </>
-                )}
-                {twoFA && (
-                    <Paper className={classes.paper}>
-                        <Avatar className={classes.avatar}>
-                            <VpnIcon />
-                        </Avatar>
-                        <Typography component="h1" variant="h5">
-                            {t("login.2FA")}
-                        </Typography>
-                        <form className={classes.form} onSubmit={twoFALogin}>
-                            <FormControl margin="normal" required fullWidth>
-                                <TextField
-                                    label={t("login.input2FACode")}
-                                    variant={"outlined"}
-                                    inputProps={{
-                                        id: "code",
-                                        type: "number",
-                                        name: "code",
-                                    }}
-                                    onChange={(event) =>
-                                        setFACode(event.target.value)
-                                    }
-                                    autoComplete
-                                    value={faCode}
-                                    autoFocus
-                                />
-                            </FormControl>
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                disabled={loading}
-                                className={classes.submit}
-                            >
-                                {t("login.continue")}
-                            </Button>{" "}
-                        </form>{" "}
+                        {useAuthn && (
+                            <form className={classes.form}>
+                                <FormControl margin="normal" required fullWidth>
+                                    <TextField
+                                        variant={"outlined"}
+                                        label={t("login.email")}
+                                        InputProps={{
+                                            id: "email",
+                                            type: "email",
+                                            name: "email",
+                                            startAdornment: !isMobile && (
+                                                <InputAdornment position="start">
+                                                    <EmailOutlined />
+                                                </InputAdornment>
+                                            ),
+                                        }}
+                                        onChange={(e) =>
+                                            setEmail(e.target.value)
+                                        }
+                                        autoComplete
+                                        value={email}
+                                        autoFocus
+                                        required
+                                    />
+                                </FormControl>
+                                <Button
+                                    type="submit"
+                                    fullWidth
+                                    variant="contained"
+                                    color="primary"
+                                    disabled={loading}
+                                    onClick={authnLogin}
+                                    className={classes.submit}
+                                >
+                                    {t("login.continue")}
+                                </Button>
+                            </form>
+                        )}
                         <Divider />
+                        <div className={classes.link}>
+                            <div>
+                                <Link component={RouterLink} to={"/forget"}>
+                                    {t("login.forgetPassword")}
+                                </Link>
+                            </div>
+                            <div>
+                                {registerEnabled && (
+                                    <Link component={RouterLink} to={"/signup"}>
+                                        {t("login.signUpAccount")}
+                                    </Link>
+                                )}
+                            </div>
+                        </div>
                     </Paper>
-                )}
 
-                <div className={classes.copyright}>
-                    © 2023
-                    <a href={"https://www.lightxi.com"} target={"_blank"} rel={"noreferrer"}>
-                        LightXi
-                    </a>
-                </div>
-                <div className={classes.credit}>
-                    <a href={`https://beian.miit.gov.cn/`} target={"_blank"} rel={"noreferrer"}>
-                        <img src={`/static/beian/gov.webp`} alt={``} />
-                        粤ICP备2023066011号-4
-                    </a>
-                    <a href={`https://dxzhgl.miit.gov.cn/dxxzsp/xkz/xkzgl/resource/qiyesearch.jsp?num=B1-20234898&type=xuke`} target={"_blank"} rel={"noreferrer"}>
-                        <img src={`/static/beian/cert.webp`} alt={``} />
-                        增值电信业务经营许可证 B1-20234898
-                    </a>
-                </div>
-            </div>
+                    {authn && (
+                        <div className={classes.authnLink}>
+                            <Button
+                                color="primary"
+                                onClick={() => setUseAuthn(!useAuthn)}
+                            >
+                                {!useAuthn && (
+                                    <>
+                                        <Fingerprint
+                                            style={{
+                                                marginRight: 8,
+                                            }}
+                                        />
+                                        {t("login.useFIDO2")}
+                                    </>
+                                )}
+                                {useAuthn && (
+                                    <>
+                                        <VpnKey
+                                            style={{
+                                                marginRight: 8,
+                                            }}
+                                        />
+                                        {t("login.usePassword")}
+                                    </>
+                                )}
+                            </Button>
+                        </div>
+                    )}
+                </>
+            )}
+            {twoFA && (
+                <Paper className={classes.paper}>
+                    <Avatar className={classes.avatar}>
+                        <VpnIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        {t("login.2FA")}
+                    </Typography>
+                    <form className={classes.form} onSubmit={twoFALogin}>
+                        <FormControl margin="normal" required fullWidth>
+                            <TextField
+                                label={t("login.input2FACode")}
+                                variant={"outlined"}
+                                inputProps={{
+                                    id: "code",
+                                    type: "number",
+                                    name: "code",
+                                }}
+                                onChange={(event) =>
+                                    setFACode(event.target.value)
+                                }
+                                autoComplete
+                                value={faCode}
+                                autoFocus
+                            />
+                        </FormControl>
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="primary"
+                            disabled={loading}
+                            className={classes.submit}
+                        >
+                            {t("login.continue")}
+                        </Button>{" "}
+                    </form>{" "}
+                    <Divider />
+                </Paper>
+            )}
         </div>
     );
 }

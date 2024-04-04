@@ -1,23 +1,23 @@
-import Button from "@material-ui/core/Button";
-import Collapse from "@material-ui/core/Collapse";
-import FormControl from "@material-ui/core/FormControl";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import FormHelperText from "@material-ui/core/FormHelperText";
-import Input from "@material-ui/core/Input";
-import InputLabel from "@material-ui/core/InputLabel";
-import MenuItem from "@material-ui/core/MenuItem";
-import Select from "@material-ui/core/Select";
-import { makeStyles } from "@material-ui/core/styles";
-import Switch from "@material-ui/core/Switch";
-import Typography from "@material-ui/core/Typography";
 import React, { useCallback, useEffect, useState } from "react";
+import { makeStyles, useTheme } from "@material-ui/core/styles";
+import Typography from "@material-ui/core/Typography";
+import InputLabel from "@material-ui/core/InputLabel";
+import FormControl from "@material-ui/core/FormControl";
+import Input from "@material-ui/core/Input";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Button from "@material-ui/core/Button";
+import API from "../../../middleware/Api";
 import { useDispatch } from "react-redux";
+import SizeInput from "../Common/SizeInput";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import Switch from "@material-ui/core/Switch";
+import Collapse from "@material-ui/core/Collapse";
 import { useHistory } from "react-router";
 import { toggleSnackbar } from "../../../redux/explorer";
-import API from "../../../middleware/Api";
-import SizeInput from "../Common/SizeInput";
 import { Trans, useTranslation } from "react-i18next";
 import { Link } from "@material-ui/core";
+import NodeSelector from "./NodeSelector";
+import PolicySelector from "../Common/PolicySelector";
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -38,17 +38,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-// function getStyles(name, personName, theme) {
-//     return {
-//         fontWeight:
-//             personName.indexOf(name) === -1
-//                 ? theme.typography.fontWeightRegular
-//                 : theme.typography.fontWeightMedium
-//     };
-// }
-
 export default function GroupForm(props) {
     const { t } = useTranslation("dashboard", { keyPrefix: "group" });
+    const { t: tVas } = useTranslation("dashboard", { keyPrefix: "vas" });
     const { t: tDashboard } = useTranslation("dashboard");
     const classes = useStyles();
     const [loading, setLoading] = useState(false);
@@ -62,7 +54,7 @@ export default function GroupForm(props) {
                   ShareEnabled: "true", // 转换类型
                   WebDAVEnabled: "true", // 转换类型
                   SpeedLimit: "0", // 转换类型
-                  PolicyList: 1, // 转换类型,至少选择一个
+                  PolicyList: ["1"], // 转换类型,至少选择一个
                   OptionsSerialized: {
                       // 批量转换类型
                       share_download: "true",
@@ -71,11 +63,13 @@ export default function GroupForm(props) {
                       decompress_size: "0",
                       source_batch: "0",
                       aria2_batch: "1",
+                      available_nodes: [],
                   },
               }
     );
     const [policies, setPolicies] = useState({});
 
+    const theme = useTheme();
     const history = useHistory();
 
     const dispatch = useDispatch();
@@ -154,12 +148,15 @@ export default function GroupForm(props) {
         [
             "archive_download",
             "archive_task",
+            "relocate",
             "one_time_download",
             "share_download",
-            "webdav_proxy",
+            "share_free",
             "aria2",
             "redirected_source",
-            "advance_delete"
+            "advance_delete",
+            "select_node",
+            "webdav_proxy",
         ].forEach((v) => {
             if (groupCopy.OptionsSerialized[v] !== undefined) {
                 groupCopy.OptionsSerialized[v] =
@@ -183,7 +180,21 @@ export default function GroupForm(props) {
                 );
             }
         });
-        groupCopy.PolicyList = [parseInt(groupCopy.PolicyList)];
+
+        groupCopy.PolicyList = groupCopy.PolicyList.map((v) => {
+            return parseInt(v);
+        });
+
+        groupCopy.OptionsSerialized.available_nodes =
+            groupCopy.OptionsSerialized.available_nodes.map((v) => {
+                return parseInt(v);
+            });
+
+        if (groupCopy.PolicyList.length < 1 && groupCopy.ID !== 3) {
+            ToggleSnackbar("top", "right", t("atLeastOnePolicy"), "warning");
+            return;
+        }
+
         // JSON转换
         try {
             groupCopy.OptionsSerialized.aria2_options = JSON.parse(
@@ -221,7 +232,8 @@ export default function GroupForm(props) {
                 <div className={classes.root}>
                     <Typography variant="h6" gutterBottom>
                         {group.ID === 0 && t("new")}
-                        {group.ID !== 0 && t("editGroup", { group: group.Name })}
+                        {group.ID !== 0 &&
+                            t("editGroup", { group: group.Name })}
                     </Typography>
 
                     <div className={classes.formContainer}>
@@ -244,36 +256,12 @@ export default function GroupForm(props) {
                                 </div>
 
                                 <div className={classes.form}>
-                                    <FormControl fullWidth>
-                                        <InputLabel htmlFor="component-helper">
-                                            {t("storagePolicy")}
-                                        </InputLabel>
-                                        <Select
-                                            labelId="demo-mutiple-chip-label"
-                                            id="demo-mutiple-chip"
-                                            value={group.PolicyList}
-                                            onChange={handleChange(
-                                                "PolicyList"
-                                            )}
-                                            input={
-                                                <Input id="select-multiple-chip" />
-                                            }
-                                        >
-                                            {Object.keys(policies).map(
-                                                (pid) => (
-                                                    <MenuItem
-                                                        key={pid}
-                                                        value={pid}
-                                                    >
-                                                        {policies[pid]}
-                                                    </MenuItem>
-                                                )
-                                            )}
-                                        </Select>
-                                        <FormHelperText id="component-helper-text">
-                                            {t("storageDes")}
-                                        </FormHelperText>
-                                    </FormControl>
+                                    <PolicySelector
+                                        value={group.PolicyList}
+                                        onChange={handleChange("PolicyList")}
+                                        label={t("availablePolicies")}
+                                        helperText={t("availablePoliciesDes")}
+                                    />
                                 </div>
 
                                 <div className={classes.form}>
@@ -382,6 +370,28 @@ export default function GroupForm(props) {
                                 />
                                 <FormHelperText id="component-helper-text">
                                     {t("allowDownloadShareDes")}
+                                </FormHelperText>
+                            </FormControl>
+                        </div>
+
+                        <div className={classes.form}>
+                            <FormControl fullWidth>
+                                <FormControlLabel
+                                    control={
+                                        <Switch
+                                            checked={
+                                                group.OptionsSerialized
+                                                    .share_free === "true"
+                                            }
+                                            onChange={handleOptionCheckChange(
+                                                "share_free"
+                                            )}
+                                        />
+                                    }
+                                    label={tVas("freeDownload")}
+                                />
+                                <FormHelperText id="component-helper-text">
+                                    {tVas("freeDownloadDes")}
                                 </FormHelperText>
                             </FormControl>
                         </div>
@@ -511,7 +521,7 @@ export default function GroupForm(props) {
                                         multiline
                                         type={"number"}
                                         inputProps={{
-                                            min: 1,
+                                            min: 0,
                                             step: 1,
                                         }}
                                         value={
@@ -523,6 +533,46 @@ export default function GroupForm(props) {
                                     />
                                     <FormHelperText id="component-helper-text">
                                         {t("aria2BatchSizeDes")}
+                                    </FormHelperText>
+                                </FormControl>
+                            </div>
+                            <div className={classes.form}>
+                                <FormControl fullWidth>
+                                    <InputLabel htmlFor="component-helper">
+                                        {t("availableNodes")}
+                                    </InputLabel>
+                                    <NodeSelector
+                                        selected={
+                                            group.OptionsSerialized
+                                                .available_nodes
+                                        }
+                                        handleChange={handleOptionChange(
+                                            "available_nodes"
+                                        )}
+                                    />
+                                    <FormHelperText id="component-helper-text">
+                                        {t("availableNodesDes")}
+                                    </FormHelperText>
+                                </FormControl>
+                            </div>
+                            <div className={classes.form}>
+                                <FormControl fullWidth>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={
+                                                    group.OptionsSerialized
+                                                        .select_node === "true"
+                                                }
+                                                onChange={handleOptionCheckChange(
+                                                    "select_node"
+                                                )}
+                                            />
+                                        }
+                                        label={t("allowSelectNode")}
+                                    />
+                                    <FormHelperText id="component-helper-text">
+                                        {t("allowSelectNodeDes")}
                                     </FormHelperText>
                                 </FormControl>
                             </div>
@@ -626,7 +676,32 @@ export default function GroupForm(props) {
                                             <Switch
                                                 checked={
                                                     group.OptionsSerialized
-                                                        .redirected_source === "true"
+                                                        .relocate === "true"
+                                                }
+                                                onChange={handleOptionCheckChange(
+                                                    "relocate"
+                                                )}
+                                            />
+                                        }
+                                        label={t("migratePolicy")}
+                                    />
+                                    <FormHelperText id="component-helper-text">
+                                        {t("migratePolicyDes")}
+                                    </FormHelperText>
+                                </FormControl>
+                            </div>
+                        )}
+
+                        {group.ID !== 3 && (
+                            <div className={classes.form}>
+                                <FormControl fullWidth>
+                                    <FormControlLabel
+                                        control={
+                                            <Switch
+                                                checked={
+                                                    group.OptionsSerialized
+                                                        .redirected_source ===
+                                                    "true"
                                                 }
                                                 onChange={handleOptionCheckChange(
                                                     "redirected_source"
@@ -638,10 +713,14 @@ export default function GroupForm(props) {
                                     <FormHelperText id="component-helper-text">
                                         <Trans
                                             ns={"dashboard"}
-                                            i18nKey={"group.redirectedSourceDes"}
+                                            i18nKey={
+                                                "group.redirectedSourceDes"
+                                            }
                                             components={[
                                                 <Link
-                                                    href={tDashboard("policy.comparesStoragePoliciesLink")}
+                                                    href={tDashboard(
+                                                        "policy.comparesStoragePoliciesLink"
+                                                    )}
                                                     key={0}
                                                     target={"_blank"}
                                                 />,

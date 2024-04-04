@@ -134,6 +134,7 @@ const taskType = [
     "fileManager.decompress",
     "setting.fileTransfer",
     "setting.importFiles",
+    "vas.migrateStoragePolicy",
     "setting.fileRecycle",
 ];
 const taskProgress = [
@@ -162,6 +163,14 @@ export const getTaskProgress = (type: any, status: any) => {
     }
     return i18next.t(taskProgress[status]);
 };
+
+export const reportReasons = [
+    "vas.nsfw",
+    "vas.malware",
+    "vas.copyright",
+    "vas.inappropriateStatements",
+    "vas.other",
+];
 
 export const setWopiExts = (exts: string[]) => {
     msDocPreviewSuffix = exts;

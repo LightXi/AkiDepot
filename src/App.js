@@ -9,6 +9,7 @@ import { useSelector } from "react-redux";
 import { Redirect, Route, Switch, useRouteMatch } from "react-router-dom";
 import Auth from "./middleware/Auth";
 import { CssBaseline, makeStyles, ThemeProvider } from "@material-ui/core";
+import PageLoading from "./component/Placeholder/PageLoading.js";
 import { changeThemeColor } from "./utils";
 import NotFound from "./component/Share/NotFound";
 // Lazy loads
@@ -21,22 +22,22 @@ import Download from "./component/Download/Download";
 import SharePreload from "./component/Share/SharePreload";
 import DocViewer from "./component/Viewer/Doc";
 import TextViewer from "./component/Viewer/Text";
+import Quota from "./component/VAS/Quota";
+import BuyQuota from "./component/VAS/BuyQuota";
 import WebDAV from "./component/Setting/WebDAV";
 import Tasks from "./component/Setting/Tasks";
 import Profile from "./component/Setting/Profile";
 import UserSetting from "./component/Setting/UserSetting";
+import QQCallback from "./component/Login/QQ";
 import Register from "./component/Login/Register";
 import Activation from "./component/Login/Activication";
 import ResetForm from "./component/Login/ResetForm";
 import Reset from "./component/Login/Reset";
-import PageLoading from "./component/Placeholder/PageLoading";
 import CodeViewer from "./component/Viewer/Code";
+import SiteNotice from "./component/Modals/SiteNotice";
 import MusicPlayer from "./component/FileManager/MusicPlayer";
 import EpubViewer from "./component/Viewer/Epub";
 import { useTranslation } from "react-i18next";
-import "./assets/global.css";
-import IndexRoute from "./middleware/IndexRoute";
-import IndexPage from "./component/Index/IndexPage";
 
 const PDFViewer = React.lazy(() =>
     import(/* webpackChunkName: "pdf" */ "./component/Viewer/PDF")
@@ -106,24 +107,29 @@ export default function App() {
     const classes = useStyles();
 
     const { path } = useRouteMatch();
-    const requireHide = ["/", "/login", "/signup", "/activate", "/reset", "/forget"];
-
     return (
         <React.Fragment>
             <ThemeProvider theme={theme}>
                 <div className={classes.root} id="container">
                     <CssBaseline />
                     <AlertBar />
-                    { !requireHide.includes(location.pathname) && <Navbar /> }
+                    <Navbar />
                     <main className={classes.content}>
-                        { !requireHide.includes(location.pathname) && <div className={classes.toolbar} /> }
+                        <div className={classes.toolbar} />
                         <Switch>
-                            <IndexRoute exact path={path} isLogin={isLogin}>
-                                <IndexPage />
-                            </IndexRoute>
+                            <AuthRoute exact path={path} isLogin={isLogin}>
+                                <Redirect
+                                    to={{
+                                        pathname: "/home",
+                                    }}
+                                />
+                            </AuthRoute>
 
                             <AuthRoute path={`${path}home`} isLogin={isLogin}>
-                                <FileManager />
+                                <>
+                                    <SiteNotice />
+                                    <FileManager />
+                                </>
                             </AuthRoute>
 
                             <AuthRoute path={`${path}video`} isLogin={isLogin}>
@@ -164,9 +170,20 @@ export default function App() {
                                 <SearchResult />
                             </Route>
 
-                            <Route path={`${path}setting`} isLogin={isLogin}>
+                            <AuthRoute path={`${path}quota`} isLogin={isLogin}>
+                                <Quota />
+                            </AuthRoute>
+
+                            <AuthRoute path={`${path}buy`} isLogin={isLogin}>
+                                <BuyQuota />
+                            </AuthRoute>
+
+                            <AuthRoute
+                                path={`${path}setting`}
+                                isLogin={isLogin}
+                            >
                                 <UserSetting />
-                            </Route>
+                            </AuthRoute>
 
                             <AuthRoute
                                 path={`${path}profile/:id`}
@@ -175,7 +192,10 @@ export default function App() {
                                 <Profile />
                             </AuthRoute>
 
-                            <AuthRoute path={`${path}webdav`} isLogin={isLogin}>
+                            <AuthRoute
+                                path={`${path}connect`}
+                                isLogin={isLogin}
+                            >
                                 <WebDAV />
                             </AuthRoute>
 
@@ -209,6 +229,10 @@ export default function App() {
 
                             <Route path={`${path}forget`} exact>
                                 <Reset />
+                            </Route>
+
+                            <Route path={`${path}login/qq`}>
+                                <QQCallback />
                             </Route>
 
                             <Route exact path={`${path}s/:id`}>

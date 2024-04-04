@@ -10,7 +10,7 @@ import { filePath, isMac } from "../../utils";
 import API, { getBaseURL } from "../../middleware/Api";
 import { pathJoin, trimPrefix } from "../../component/Uploader/core/utils";
 import { getPreviewPath, walk } from "../../utils/api";
-import { askForOption } from "./async";
+import { askForOption, trySharePurchase } from "./async";
 import Auth from "../../middleware/Auth";
 import { encodingRequired, isPreviewable } from "../../config";
 import { push } from "connected-react-router";
@@ -305,6 +305,13 @@ export const startDownload = (
         }
 
         dispatch(changeContextMenu("file", false));
+
+        try {
+            await dispatch(trySharePurchase(share));
+        } catch (e) {
+            return;
+        }
+
         dispatch(openLoadingDialog(i18next.t("fileManager.preparingDownload")));
         try {
             const res = await getDownloadURL(file ? file : share);
@@ -322,9 +329,11 @@ export const startBatchDownload = (
 ): ThunkAction<any, any, any, any> => {
     return async (dispatch, getState): Promise<void> => {
         dispatch(changeContextMenu("file", false));
-        const {
-            explorer: { selected, fileList, dirList },
-        } = getState();
+        try {
+            await dispatch(trySharePurchase(share));
+        } catch (e) {
+            return;
+        }
 
         const user = Auth.GetUser();
         if (user.group.allowArchiveDownload) {
@@ -364,6 +373,10 @@ export const startBatchDownload = (
                 return;
             }
         }
+
+        const {
+            explorer: { selected, fileList, dirList },
+        } = getState();
 
         dispatch(openLoadingDialog(i18next.t("modals.listingFiles")));
 
@@ -1124,9 +1137,9 @@ export const openParentFolder = (): ThunkAction<any, any, any, any> => {
         dispatch(openLoadingDialog(i18next.t("modals.processing")));
         API.get(
             "/object/property/" +
-            selected[0].id +
-            "?trace_root=true&is_folder=" +
-            (selected[0].type === "dir").toString()
+                selected[0].id +
+                "?trace_root=true&is_folder=" +
+                (selected[0].type === "dir").toString()
         )
             .then((response) => {
                 const path =

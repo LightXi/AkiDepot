@@ -36,8 +36,8 @@ export default function DropDown(props) {
     return (
         <>
             {props.folders.map((folder, id) => (
+                // eslint-disable-next-line react/jsx-key
                 <DropDownItem
-                    key={id}
                     path={"/" + props.folders.slice(0, id).join("/")}
                     navigateTo={props.navigateTo}
                     id={id}

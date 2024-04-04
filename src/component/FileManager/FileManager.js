@@ -1,16 +1,19 @@
 import React, { Component } from "react";
+
+import Navigator from "./Navigator/Navigator";
 import { DndProvider } from "react-dnd";
 import HTML5Backend from "react-dnd-html5-backend";
-import { connect } from "react-redux";
-import { withRouter } from "react-router-dom";
-import { changeSubTitle } from "../../redux/viewUpdate/action";
-import pathHelper from "../../utils/page";
 import DragLayer from "./DnD/DragLayer";
 import Explorer from "./Explorer";
 import Modals from "./Modals";
-import Navigator from "./Navigator/Navigator";
+import { withStyles } from "@material-ui/core";
+import { connect } from "react-redux";
+import { changeSubTitle } from "../../redux/viewUpdate/action";
+import { withRouter } from "react-router-dom";
+import pathHelper from "../../utils/page";
 import SideDrawer from "./Sidebar/SideDrawer";
 import classNames from "classnames";
+import { ImageLoader } from "@abslant/cd-image-loader";
 import {
     closeAllModals,
     navigateTo,
@@ -18,7 +21,6 @@ import {
     toggleSnackbar,
 } from "../../redux/explorer";
 import PaginationFooter from "./Pagination";
-import withStyles from "@material-ui/core/styles/withStyles";
 
 const styles = (theme) => ({
     root: {
@@ -67,8 +69,8 @@ const mapDispatchToProps = (dispatch) => {
 class FileManager extends Component {
     constructor(props) {
         super(props);
-        this.image = React.createRef();
     }
+
     componentWillUnmount() {
         this.props.setSelectedTarget([]);
         this.props.closeAllModals();
@@ -80,6 +82,7 @@ class FileManager extends Component {
             this.props.changeSubTitle(null);
         }
     }
+
     render() {
         const { classes } = this.props;
         return (
@@ -101,6 +104,7 @@ class FileManager extends Component {
                     </div>
 
                     <DragLayer />
+                    <ImageLoader />
                 </DndProvider>
                 <SideDrawer />
             </div>

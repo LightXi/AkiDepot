@@ -1,4 +1,3 @@
-/* eslint-disable no-case-declarations */
 import { InitSiteConfig } from "../middleware/Init";
 import { combineReducers } from "../redux/combineReducers";
 import viewUpdate from "../redux/viewUpdate/reducer";
@@ -63,6 +62,7 @@ export const initState = {
             },
         },
         captcha_ReCaptchaKey: "defaultKey",
+        site_notice: "",
         captcha_type: "normal",
         tcaptcha_captcha_app_id: "",
         wopi_exts: [],
@@ -133,6 +133,7 @@ const cloudreveApp = (state = defaultStatus, action) => {
             return Object.assign({}, state, {
                 siteConfig: action.config,
             });
+
         case "REFRESH_FILE_LIST":
             return Object.assign({}, state, {
                 navigator: Object.assign({}, state.navigator, {

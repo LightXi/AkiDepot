@@ -4,15 +4,25 @@ import ViewListIcon from "@material-ui/icons/ViewList";
 import ViewSmallIcon from "@material-ui/icons/ViewComfy";
 import ViewModuleIcon from "@material-ui/icons/ViewModule";
 import TextTotateVerticalIcon from "@material-ui/icons/TextRotateVertical";
+import SaveIcon from "@material-ui/icons/Save";
+import { Report as ReportIcon } from "@material-ui/icons";
 import DownloadIcon from "@material-ui/icons/CloudDownload";
 import Avatar from "@material-ui/core/Avatar";
 import { useDispatch, useSelector } from "react-redux";
 import Auth from "../../../middleware/Auth";
-import { changeViewMethod, setShareUserPopover } from "../../../redux/explorer";
-import { changeSortMethod, startBatchDownload } from "../../../redux/explorer/action";
+import {
+    changeSortMethod,
+    startBatchDownload,
+} from "../../../redux/explorer/action";
+import {
+    changeViewMethod,
+    openResaveDialog,
+    setShareUserPopover,
+} from "../../../redux/explorer";
 import { FormatPageBreak } from "mdi-material-ui";
 import pathHelper from "../../../utils/page";
 import { changePageSize } from "../../../redux/viewUpdate/action";
+import Report from "../../Modals/Report";
 import { useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
@@ -52,6 +62,10 @@ export default function SubActions({ isSmall, inherit }) {
         (method) => dispatch(changeSortMethod(method)),
         [dispatch]
     );
+    const OpenResaveDialog = useCallback(
+        (key) => dispatch(openResaveDialog(key)),
+        [dispatch]
+    );
     const SetShareUserPopover = useCallback(
         (e) => dispatch(setShareUserPopover(e)),
         [dispatch]
@@ -60,12 +74,14 @@ export default function SubActions({ isSmall, inherit }) {
         () => dispatch(startBatchDownload(share)),
         [dispatch, share]
     );
-    const ChangePageSize = useCallback((e) => dispatch(changePageSize(e)), [
-        dispatch,
-    ]);
+    const ChangePageSize = useCallback(
+        (e) => dispatch(changePageSize(e)),
+        [dispatch]
+    );
     const [anchorSort, setAnchorSort] = useState(null);
     const [anchorPagination, setAnchorPagination] = useState(null);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const [openReport, setOpenReport] = useState(false);
     const showSortOptions = (e) => {
         setAnchorSort(e.currentTarget);
     };
@@ -207,6 +223,36 @@ export default function SubActions({ isSmall, inherit }) {
                     </MenuItem>
                 ))}
             </Menu>
+            {share && (
+                <>
+                    <IconButton
+                        title={vasT("saveToMyFiles")}
+                        className={classes.sideButton}
+                        onClick={() => OpenResaveDialog(share.key)}
+                        color={inherit ? "inherit" : "default"}
+                    >
+                        <SaveIcon fontSize={isSmall ? "small" : "default"} />
+                    </IconButton>
+                    {!inherit && (
+                        <>
+                            <IconButton
+                                title={vasT("report")}
+                                className={classes.sideButton}
+                                onClick={() => setOpenReport(true)}
+                            >
+                                <ReportIcon
+                                    fontSize={isSmall ? "small" : "default"}
+                                />
+                            </IconButton>
+                            <Report
+                                open={openReport}
+                                share={share}
+                                onClose={() => setOpenReport(false)}
+                            />
+                        </>
+                    )}
+                </>
+            )}
             {share && (
                 <IconButton
                     title={t("shareCreateBy", { nick: share.creator.nick })}

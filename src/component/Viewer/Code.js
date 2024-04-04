@@ -162,8 +162,9 @@ export default function CodeViewer() {
                                         return codePreviewSuffix[k];
                                     })
                                 )
-                            ).map((extension, index) => (
-                                <MenuItem value={extension} key={index}>
+                            ).map((extension) => (
+                                // eslint-disable-next-line react/jsx-key
+                                <MenuItem value={extension}>
                                     {extension}
                                 </MenuItem>
                             ))}

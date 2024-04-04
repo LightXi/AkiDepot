@@ -1,22 +1,26 @@
-import Avatar from "@material-ui/core/Avatar";
-import Button from "@material-ui/core/Button";
-import Chip from "@material-ui/core/Chip";
-import { blue, green, red, yellow } from "@material-ui/core/colors";
-import Dialog from "@material-ui/core/Dialog";
-import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
-import Divider from "@material-ui/core/Divider";
+import React, { useCallback, useEffect, useState } from "react";
 import Grid from "@material-ui/core/Grid";
+import Paper from "@material-ui/core/Paper";
+import {
+    CartesianGrid,
+    Legend,
+    Line,
+    LineChart,
+    Tooltip,
+    XAxis,
+    YAxis,
+} from "recharts";
+import { ResponsiveContainer } from "recharts/lib/component/ResponsiveContainer";
+import { makeStyles } from "@material-ui/core/styles";
+import pathHelper from "../../utils/page";
+import API from "../../middleware/Api";
+import { useDispatch } from "react-redux";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
 import List from "@material-ui/core/List";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemAvatar from "@material-ui/core/ListItemAvatar";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import Paper from "@material-ui/core/Paper";
-import { makeStyles } from "@material-ui/core/styles";
-import Typography from "@material-ui/core/Typography";
+import Avatar from "@material-ui/core/Avatar";
 import {
     Description,
     Favorite,
@@ -30,23 +34,19 @@ import {
     Public,
     Telegram,
 } from "@material-ui/icons";
+import ListItemText from "@material-ui/core/ListItemText";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import { blue, green, red, yellow } from "@material-ui/core/colors";
 import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import {
-    CartesianGrid,
-    Legend,
-    Line,
-    LineChart,
-    Tooltip,
-    XAxis,
-    YAxis,
-} from "recharts";
-import { ResponsiveContainer } from "recharts/lib/component/ResponsiveContainer";
 import TimeAgo from "timeago-react";
+import Chip from "@material-ui/core/Chip";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogActions from "@material-ui/core/DialogActions";
+import Button from "@material-ui/core/Button";
 import { toggleSnackbar } from "../../redux/explorer";
-import API from "../../middleware/Api";
-import pathHelper from "../../utils/page";
 import { Trans, useTranslation } from "react-i18next";
 
 const useStyles = makeStyles((theme) => ({
@@ -325,7 +325,6 @@ export default function Index() {
                 <Paper>
                     <div className={classes.logoContainer}>
                         <img
-                            alt="cloudreve"
                             className={classes.logo}
                             src={"/static/img/cloudreve.svg"}
                         />
